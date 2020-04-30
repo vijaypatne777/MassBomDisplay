@@ -1,0 +1,115 @@
+<mvc:View controllerName="com.bom.sap.com.zbomapp.controller.Worklist" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:u="sap.ui.unified"
+	xmlns:semantic="sap.m.semantic" xmlns:footerbar="sap.ushell.ui.footerbar" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form"
+	xmlns:l="sap.ui.layout">
+	<semantic:FullscreenPage id="page" navButtonPress="onNavBack" showNavButton="false" title="{i18n>appTitle}">
+		<semantic:content>
+			<VBox class="sapUiSmallMargin">
+				<f:Form id="FormToolbar" editable="true" ariaLabelledBy="Title1">
+					<f:toolbar>
+						<Toolbar id="TB1">
+							<Title id="Title1" text="{i18n>searchMat}" level="H4" titleStyle="H4"/>
+							<ToolbarSpacer/>
+						</Toolbar>
+					</f:toolbar>
+					<f:layout>
+						<f:ResponsiveGridLayout labelSpanXL="4" labelSpanL="3" labelSpanM="4" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="4"
+							emptySpanM="0" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false"/>
+					</f:layout>
+					<f:formContainers>
+						<f:FormContainer ariaLabelledBy="Title2">
+							<f:formElements>
+								<f:FormElement label="{i18n>Material}">
+									<f:fields>
+										<MultiInput id="multiInput" placeholder="{i18n>placeHoldMaterial}" valueHelpRequest="onValueHelpRequest" width="206px" submit="onEnterMatNo"
+											required="true" showValueHelp="false"></MultiInput>
+									</f:fields>
+								</f:FormElement>
+								<f:FormElement label="{i18n>plant}">
+									<f:fields>
+										<Input id="idPlant" placeholder="{i18n>placeHoldPlant}" class="apUiLargeMarginBegin" width="206px" required="true"/>
+									</f:fields>
+								</f:FormElement>
+								<f:FormElement label="{i18n>BOMUsage}">
+									<f:fields>
+										<Input id="idBOMUsage" placeholder="{i18n>placeHoldBOMUsage}" class="apUiLargeMarginBegin" width="206px"/>
+									</f:fields>
+								</f:FormElement>
+								<f:FormElement label="{i18n>BOMApplication}">
+									<f:fields>
+										<Input id="idBOMApp" placeholder="{i18n>placeHolBOMApp}" class="apUiLargeMarginBegin" width="206px">
+											<layoutData>
+												<l:GridData span="XL1 L2 M2 S4"/>
+											</layoutData>
+										</Input>
+										<Button tooltip="{i18n>Search}" text="{i18n>Search}" type="Emphasized" width="30%" press="onEnter" icon="sap-icon://search" iconFirst="true"/>
+									</f:fields>
+								</f:FormElement>
+							</f:formElements>
+						</f:FormContainer>
+					</f:formContainers>
+				</f:Form>
+			</VBox>
+			<Table id="table" width="auto" items="{path:'itemModel>/results'}" noDataText="{worklistView>/tableNoDataText}"
+				busyIndicatorDelay="{worklistView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" updateFinished=".onUpdateFinished"
+				alternateRowColors="true">
+				<headerToolbar>
+					<OverflowToolbar>
+						<Title id="tableHeader" text="{worklistView>/worklistTableTitle}" level="H3"/>
+						<ToolbarSpacer/>
+						<SearchField id="searchField" tooltip="{i18n>worklistSearchTooltip}" search=".onSearch">
+							<layoutData>
+								<OverflowToolbarLayoutData maxWidth="200px" priority="NeverOverflow"/>
+							</layoutData>
+						</SearchField>
+						<Button id="idReset" tooltip="{i18n>ResetTable}" text="{i18n>Reset}" type="Emphasized" width="8%" press="onReset" icon="sap-icon://reset"
+							iconFirst="true"/>
+						<Button tooltip="{i18n>Sort}" text="{i18n>Sort}" type="Emphasized" icon="sap-icon://sort" press="handleSortButtonPressed"/>
+						<Button id="idExportToExcel" tooltip="{i18n>ExportToExcel}" text="{i18n>ExportToExcel}" type="Emphasized" width="12%" press="onExport"
+							icon="sap-icon://excel-attachment" iconFirst="true"/>
+					</OverflowToolbar>
+				</headerToolbar>
+				<columns>
+					<Column id="idBillOfMaterialVersion">
+						<Text text="{i18n>BillOfMaterialVersion}" id="materialBillOfMaterialVersion"/>
+					</Column>
+					<Column id="idMaterialColColumn">
+						<Text text="{i18n>MaterialCol}" id="MaterialColTitle"/>
+					</Column>
+					<Column id="idIsSubItem" hAlign="Center">
+						<Text text="{i18n>IsSubItem}" id="IsSubItemTitle"/>
+					</Column>
+					<Column id="idIsAssembly" hAlign="Center">
+						<Text text="{i18n>IsAssembly}" id="IsAssemblyTitle"/>
+					</Column>
+					<Column id="idCompDesc" hAlign="Center" width="30%">
+						<Text text="{i18n>CompDesc}" id="CompDescTitle1"/>
+					</Column>
+					<Column id="idBomQty" hAlign="Center">
+						<Text text="{i18n>BOMQty}" id="BomQtyColumnTitle"/>
+					</Column>
+					<Column id="idPlantCol" hAlign="Center">
+						<Text text="{i18n>Plant}" id="PlantTitle"/>
+					</Column>
+					<Column id="idBomCat" hAlign="Center">
+						<Text text="{i18n>BomCat}" id="BomCatColumnTitle11"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem >
+						<cells>
+							<ObjectIdentifier title="{path:'itemModel>BillOfMaterialVersion'}"/>
+							<ObjectIdentifier title="{path:'itemModel>Material'}"/>
+							<Text id="idIsSubItemTxt" text="{path:'itemModel>IsSubItem'}"/>
+							<Text id="idIsAssemblyTxt" text="{path:'itemModel>IsAssembly'}"/>
+							<Text id="idUom3" text="{path:'itemModel>ComponentDescription'}"/>
+							<Text id="idUomMatCount" text="{path:'itemModel>BillOfMaterialItemQuantity'}"/>
+							<Text id="idUom" text="{path:'itemModel>Plant'}"/>
+							<Text id="idUom2" text="{path:'itemModel>BillOfMaterialCategory'}"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</semantic:content>
+		<semantic:customFooterContent></semantic:customFooterContent>
+	</semantic:FullscreenPage>
+</mvc:View>
