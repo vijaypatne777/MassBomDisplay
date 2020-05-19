@@ -1,0 +1,1 @@
+sap.ui.define(["./BaseController"],function(o){"use strict";return o.extend("com.bom.sap.com.zbomapp.controller.NotFound",{onLinkPressed:function(){this.getRouter().navTo("worklist")}})});
