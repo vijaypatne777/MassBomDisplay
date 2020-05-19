@@ -1,0 +1,12 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<ViewSettingsDialog confirm="handleSortStdConfirm">
+		<sortItems>
+			<ViewSettingsItem text="{i18n>BillOfMaterialVersion}" key="kBillOfMaterialVersion" selected="true"/>
+			<ViewSettingsItem text="{i18n>MaterialCol}" key="kMaterialCol"/>
+			<ViewSettingsItem text="{i18n>IsSubItem}" key="kLevel"/>
+			<ViewSettingsItem text="{i18n>CompDesc}" key="kCompDesc"/>
+			<ViewSettingsItem text="{i18n>BOMQtyItemNo}" key="kBOMQtyItemNo"/>
+			<ViewSettingsItem text="{i18n>BOMQty}" key="kBOMQty"/>
+		</sortItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>
