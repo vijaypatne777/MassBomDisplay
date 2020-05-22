@@ -1,0 +1,1 @@
+function initModel(){var a="/S4HC/sap/opu/odata/sap/API_BILL_OF_MATERIAL_SRV/";var e=new sap.ui.model.odata.ODataModel(a,true);sap.ui.getCore().setModel(e)}
