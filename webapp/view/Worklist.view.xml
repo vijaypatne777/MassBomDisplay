@@ -1,0 +1,124 @@
+<mvc:View controllerName="com.bom.sap.com.zbomapp.controller.Worklist" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:u="sap.ui.unified"
+	xmlns:semantic="sap.m.semantic" xmlns:footerbar="sap.ushell.ui.footerbar" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form"
+	xmlns:l="sap.ui.layout">
+	<semantic:FullscreenPage id="page" navButtonPress="onNavBack" showNavButton="false" title="{i18n>appTitle}">
+		<semantic:content>
+			<VBox class="sapUiSmallMargin">
+				<f:Form id="FormToolbar" editable="true" ariaLabelledBy="Title1">
+					<f:toolbar>
+						<Toolbar id="TB1">
+							<Title id="Title1" text="{i18n>searchMat}" level="H4" titleStyle="H4"/>
+							<ToolbarSpacer/>
+						</Toolbar>
+					</f:toolbar>
+					<f:layout>
+						<f:ResponsiveGridLayout labelSpanXL="4" labelSpanL="3" labelSpanM="4" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="4"
+							emptySpanM="0" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false"/>
+					</f:layout>
+					<f:formContainers>
+						<f:FormContainer ariaLabelledBy="Title2">
+							<f:formElements>
+								<f:FormElement label="{i18n>Material}">
+									<f:fields>
+										<MultiInput id="multiInput" placeholder="{i18n>placeHoldMaterial}" width="206px" submit="onEnterMatNo" required="true" showValueHelp="false"></MultiInput>
+									</f:fields>
+								</f:FormElement>
+								<f:FormElement label="{i18n>plant}">
+									<f:fields>
+										<Input id="idPlant" placeholder="{i18n>placeHoldPlant}" class="apUiLargeMarginBegin" width="206px" required="true" liveChange="onLiveChange"/>
+									</f:fields>
+								</f:FormElement>
+								<f:FormElement label="{i18n>BOMUsage}">
+									<f:fields>
+										<HBox>
+											<Input id="idBOMUsage1" class="apUiLargeMarginBegin" width="30px" maxLength="1"/>
+											<Input id="idBOMUsage2" class="sapUiSmallMarginEnd" width="30px" maxLength="1"/>
+											<!--<Input id="idBOMUsage3" class="apUiLargeMarginBegin" width="30px" maxLength="1" visible="false"/>-->
+											<Button tooltip="{i18n>Search}" class="sapUiSmallMarginEnd" text="{i18n>Search}" type="Emphasized" width="130%" press="onEnter"
+												icon="sap-icon://search" iconFirst="true" visible="true"/>
+											<!--<CheckBox text="ColumnHeaders"
+						select="onSelect"/>-->
+										</HBox>
+									</f:fields>
+								</f:FormElement>
+								<f:FormElement label="{i18n>BOMApplication}" visible="false">
+									<f:fields>
+										<Input id="idBOMApp" placeholder="{i18n>placeHolBOMApp}" class="apUiLargeMarginBegin" width="206px" value="1" maxLength="1">
+											<layoutData>
+												<l:GridData span="XL1 L2 M2 S4"/>
+											</layoutData>
+										</Input>
+										<Button tooltip="{i18n>Search}" text="{i18n>Search}" type="Emphasized" width="30%" press="onEnter" icon="sap-icon://search" iconFirst="true"/>
+									</f:fields>
+								</f:FormElement>
+							</f:formElements>
+						</f:FormContainer>
+					</f:formContainers>
+				</f:Form>
+			</VBox>
+			<Table id="table" width="auto" items="{BRF>/}" noDataText="{worklistView>/tableNoDataText}"
+				busyIndicatorDelay="{worklistView>/tableBusyDelay}" growing="true" growingScrollToLoad="true" updateFinished=".onUpdateFinished"
+				alternateRowColors="true">
+				<headerToolbar>
+					<OverflowToolbar>
+						<Title id="tableHeader" text="{worklistView>/worklistTableTitle}" level="H3"/>
+						<ToolbarSpacer/>
+						<SearchField id="searchField" tooltip="{i18n>worklistSearchTooltip}" search=".onSearch">
+							<layoutData>
+								<OverflowToolbarLayoutData maxWidth="200px" priority="NeverOverflow"/>
+							</layoutData>
+						</SearchField>
+						<Button id="idReset" tooltip="{i18n>ResetTable}" text="{i18n>Reset}" type="Emphasized" width="8%" press="onReset" icon="sap-icon://reset"
+							iconFirst="true"/>
+						<Button tooltip="{i18n>Sort}" text="{i18n>Sort}" type="Emphasized" icon="sap-icon://sort" press="handleSortButtonPressed" visible="false"/>
+						<Button id="idExportToExcel" tooltip="{i18n>ExportToExcel}" text="{i18n>ExportToExcel}" type="Emphasized" width="12%" press="onCustomExcel"
+							icon="sap-icon://excel-attachment" iconFirst="true"/>
+						<!--<Button tooltip="{i18n>Sort}" text="Expand" type="Emphasized" icon="sap-icon://sort" press="testExpand"/>-->
+					</OverflowToolbar>
+				</headerToolbar>
+				<columns>
+					<Column id="idBillOfMaterialVersion">
+						<Text text="{i18n>BillOfMaterialVersion}" id="materialBillOfMaterialVersion"/>
+						<!--{oRefModel>/#MaterialBOMItemType/BillOfMaterialVariant/@sap:label}-->
+					</Column>
+					<Column id="idIsSubItem" hAlign="Center">
+						<Text text="{i18n>IsSubItem}" id="IsSubItemTitle"/>
+					</Column>
+					<Column id="idIsAssembly" hAlign="Center">
+						<Text text="{i18n>IsAssembly}" id="IsAssemblyTitle"/>
+					</Column>
+					<Column id="idBOMIsToBeDeleted" hAlign="Center">
+						<Text text="{i18n>BOMIsToBeDeleted}" id="idBOMIsToBeDeletedTitle"/>
+					</Column>
+					<Column id="idBomQtyItemNo" hAlign="Center">
+						<Text text="{i18n>BOMQtyItemNo}" id="BomQtyQtyItemNoColumnTitle"/>
+					</Column>
+					<Column id="idMaterialColColumn">
+						<Text text="{i18n>MaterialCol}" id="MaterialColTitle"/>
+					</Column>
+					<Column id="idCompDesc" width="25%">
+						<Text text="{i18n>CompDesc}" id="CompDescTitle1"/>
+					</Column>
+					<Column id="idBomQty" hAlign="Center">
+						<Text text="{i18n>BOMQty}" id="BomQtyColumnTitle"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem >
+						<cells>
+							<ObjectIdentifier title="{BRF>mat}"/>
+							<Text text="{BRF>lvl}"/>
+							<Text text="{BRF>asm}"/>
+							<Text text="{BRF>usg}"/>
+							<Text text="{BRF>itm}"/>
+							<ObjectIdentifier title="{BRF>bom}"/>
+							<Text text="{BRF>des}"/>
+							<Text text="{BRF>qty}"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</semantic:content>
+		<semantic:customFooterContent></semantic:customFooterContent>
+	</semantic:FullscreenPage>
+</mvc:View>
