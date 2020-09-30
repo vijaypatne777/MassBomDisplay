@@ -462,15 +462,17 @@ sap.ui.define([
 		onBOMSerch: function () {
 
 			var m = new Date();
-				var oCurrentTimeStamp = "datetime '"+m.getUTCFullYear()  + "/" + (m.getUTCMonth() + 1) + "/" + m.getUTCDate() /*+ "T" + m.getUTCHours() + ":" + m.getUTCMinutes() +
-					":" + m.getUTCSeconds()+"'"*/;
-					//var oCurrentTimeStamp = "datetime'"+"2020-08-03T00:00:00'";
-			
+			var oCurrentTimeStamp = "datetime '" + m.getUTCFullYear() + "/" + (m.getUTCMonth() + 1) + "/" + m.getUTCDate()
+				/*+ "T" + m.getUTCHours() + ":" + m.getUTCMinutes() +
+					":" + m.getUTCSeconds()+"'"*/
+			;
+			//var oCurrentTimeStamp = "datetime'"+"2020-08-03T00:00:00'";
+
 			/*var oDateFormat = sap.ui.core.format.DateFormat.getInstance({
 				pattern: "yyyy-MM-ddTHH:mm:ss"
 			});*/
 			//var oDate = oDateFormat.format(oDateFormat.parse(date));
-			alert("Curr date Time - " + oCurrentTimeStamp);
+			// alert("Curr date Time - " + oCurrentTimeStamp); //alert removed.
 			//alert(" Formatted Curr date Time - " + oCurrentTimeStamp);
 
 			var oDateFormat = sap.ui.core.format.DateFormat.getDateTimeInstance({
@@ -517,24 +519,24 @@ sap.ui.define([
 						],
 						and: true
 					}));
-					
+
 					// Start 
 					dWithDate.push(new sap.ui.model.Filter({
 						filters: [
 							new sap.ui.model.Filter("Material", sap.ui.model.FilterOperator.EQ, cry[i]),
 							new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, oPlant),
 							//new sap.ui.model.Filter("BOMItemIsCostingRelevant", sap.ui.model.FilterOperator.EQ,"X")
-							new sap.ui.model.Filter("ValidityEndDate", sap.ui.model.FilterOperator.GT,oCurrentTimeStamp) //"datetime'"+"2020-08-03T00:00:00'"
+							new sap.ui.model.Filter("ValidityEndDate", sap.ui.model.FilterOperator.GT, oCurrentTimeStamp) //"datetime'"+"2020-08-03T00:00:00'"
 						],
 						and: true
 					}));
 					// End
 				}
-				zFilter.push(new sap.ui.model.Filter({    
+				zFilter.push(new sap.ui.model.Filter({
 					filters: d,
 					and: false
 				}));
-				zFilterWithDate.push(new sap.ui.model.Filter({    
+				zFilterWithDate.push(new sap.ui.model.Filter({
 					filters: dWithDate,
 					and: false
 				}));
@@ -542,7 +544,7 @@ sap.ui.define([
 					return new Promise(
 						function (resolve, reject) {
 							far.read(z, {
-								filters: zFilterWithDate,
+								filters: zFilter,
 								urlParameters: {
 									"$select": "BillOfMaterialCategory,BillOfMaterialVariant,BillOfMaterialVersion,BillOfMaterialItemNodeNumber,Material,Plant,BillOfMaterialItemUUID,ValidityStartDate,ValidityEndDate,EngineeringChangeDocument,BillOfMaterialComponent,BillOfMaterialItemCategory,BillOfMaterialItemNumber,BillOfMaterialItemUnit,BillOfMaterialItemQuantity,IsAssembly,ComponentDescription,BOMItemIsSalesRelevant,IsProductionRelevant,BOMItemIsCostingRelevant,IsEngineeringRelevant,RequiredComponent,IsSubItem,BillOfMaterial,SpecialProcurementType",
 									"$orderby": "BillOfMaterialItemNumber"
@@ -653,12 +655,13 @@ sap.ui.define([
 					if (q) {
 						for (var u = 0; u < alt.length; u++) {
 							for (var v = 0; v < arr.length; v++) {
-								if (alt[u].asm.length > 0) {
-									if (alt[u].bom === arr[v].mat) {
-										j += 1;
-										alt.splice(u + j, 0, arr[v]);
-									}
+								// if (alt[u].asm.length > 0) {
+								if (alt[u].bom === arr[v].mat) {
+									alt[u].asm = "X";
+									j += 1;
+									alt.splice(u + j, 0, arr[v]);
 								}
+								// }
 							}
 							j = 0;
 						}
@@ -667,14 +670,62 @@ sap.ui.define([
 					p = false;
 					q = true;
 					g = [];
-					for (var y = 0; y < x[0].results.length; y++) {
-						if (x[0].results[y].IsAssembly.length > 0) {
-							g.push(x[0].results[y].BillOfMaterialComponent);
-						}
+					// ------------
+					var sapMaterial = x[0].results;
+					// var patchMat = that.patch(sapMaterial);
+					// -------------
+					var sapnd = [],
+						sapnzFilter = [];
+					for (i = 0; i < sapMaterial.length; i++) {
+						sapnd.push(new sap.ui.model.Filter({
+							filters: [
+								new sap.ui.model.Filter("Material", sap.ui.model.FilterOperator.EQ, sapMaterial[i].BillOfMaterialComponent),
+								new sap.ui.model.Filter("Plant", sap.ui.model.FilterOperator.EQ, sapMaterial[i].Plant)
+							],
+							and: true
+						}));
 					}
-					d = [];
-					zFilter = [];
-					oFunc($.sap.brk, g);
+					sapnzFilter.push(new sap.ui.model.Filter({
+						filters: sapnd,
+						and: false
+					}));
+					var oModel = that.getView().getModel();
+					var prom = function (pz) {
+						return new Promise(
+							function (resolve, reject) {
+								oModel.read(pz, {
+									filters: sapnzFilter,
+									urlParameters: {
+										"$select": "Material"
+									},
+									success: function (k) {
+										resolve(k);
+									},
+									error: function () {
+
+									}
+								});
+							});
+					};
+					prom("/MaterialBOM").then(function (py) {
+						for (var y = 0; y < py.results.length; y++) {
+							// if (x[0].results[y].IsAssembly.length > 0) {
+							g.push(py.results[y].Material);
+							// }
+						}
+						d = [];
+						zFilter = [];
+						oFunc($.sap.brk, g);
+					});
+					//-------------
+					// for (var y = 0; y < x[0].results.length; y++) {
+					// 	if (x[0].results[y].IsAssembly.length > 0) {
+					// 		g.push(x[0].results[y].BillOfMaterialComponent);
+					// 	}
+					// }
+					// d = [];
+					// zFilter = [];
+					// oFunc($.sap.brk, g);
 
 				});
 			};
